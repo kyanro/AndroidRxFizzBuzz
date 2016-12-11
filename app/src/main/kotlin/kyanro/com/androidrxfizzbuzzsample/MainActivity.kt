@@ -39,14 +39,18 @@ class MainActivity : AppCompatActivity() {
             }
 
         init {
-            buttonTapStream
+            val countStream = buttonTapStream
                     .map({ event -> 1 })
                     .scan({ sum, n -> sum + n })
-                    .subscribe({ n: Int ->
-                        count = n.toString()
-                        activity.setFizzEnabled(n % 3 == 0)
-                        activity.setBuzzEnabled(n % 5 == 0)
-                    })
+                    .publish()
+                    .refCount()
+            countStream.subscribe({ n -> count = n.toString() })
+
+            val fizzStream = countStream.map({ n -> n % 3 == 0 })
+            fizzStream.subscribe({ isShown -> activity.setFizzEnabled(isShown) })
+
+            val buzzStream = countStream.map({ n -> n % 5 == 0 })
+            buzzStream.subscribe({ isShown -> activity.setBuzzEnabled(isShown) })
         }
     }
 }

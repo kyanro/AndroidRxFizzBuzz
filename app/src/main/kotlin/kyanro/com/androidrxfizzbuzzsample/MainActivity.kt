@@ -17,25 +17,31 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewModel = ViewModel(this, RxView.clicks(binding.button))
+        val viewModel = ViewModel(RxView.clicks(binding.button))
         binding.viewModel = viewModel
     }
 
-    fun setFizzEnabled(show: Boolean) {
-        binding.fizz.visibility = if (show) View.VISIBLE else View.INVISIBLE
-    }
-
-    fun setBuzzEnabled(show: Boolean) {
-        binding.buzz.visibility = if (show) View.VISIBLE else View.INVISIBLE
-    }
-
-    class ViewModel(activity: MainActivity, buttonTapStream: rx.Observable<Void>)
+    class ViewModel(buttonTapStream: rx.Observable<Void>)
         : BaseObservable() {
         @Bindable
         var count: String = "0"
             set(value) {
                 field = value
                 notifyPropertyChanged(BR.count)
+            }
+
+        @Bindable
+        var fizzVisibility = View.VISIBLE
+            set(value) {
+                field = value
+                notifyPropertyChanged(BR.fizzVisibility)
+            }
+
+        @Bindable
+        var buzzVisibility = View.VISIBLE
+            set(value) {
+                field = value
+                notifyPropertyChanged(BR.buzzVisibility)
             }
 
         init {
@@ -47,10 +53,14 @@ class MainActivity : AppCompatActivity() {
             countStream.subscribe({ n -> count = n.toString() })
 
             val fizzStream = countStream.map({ n -> n % 3 == 0 })
-            fizzStream.subscribe({ isShown -> activity.setFizzEnabled(isShown) })
+            fizzStream.subscribe({ isShown ->
+                fizzVisibility = if (isShown) View.VISIBLE else View.INVISIBLE
+            })
 
             val buzzStream = countStream.map({ n -> n % 5 == 0 })
-            buzzStream.subscribe({ isShown -> activity.setBuzzEnabled(isShown) })
+            buzzStream.subscribe({ isShown ->
+                buzzVisibility = if (isShown) View.VISIBLE else View.INVISIBLE
+            })
         }
     }
 }

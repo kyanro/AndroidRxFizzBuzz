@@ -1,12 +1,13 @@
 package kyanro.com.androidrxfizzbuzzsample
 
-import android.databinding.BaseObservable
-import android.databinding.Bindable
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.jakewharton.rxbinding.view.RxView
+import jp.keita.kagurazaka.rxproperty.ReadOnlyRxProperty
+import jp.keita.kagurazaka.rxproperty.RxProperty
+import jp.keita.kagurazaka.rxproperty.toRxProperty
 import kyanro.com.androidrxfizzbuzzsample.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -21,28 +22,11 @@ class MainActivity : AppCompatActivity() {
         binding.viewModel = viewModel
     }
 
-    class ViewModel(buttonTapStream: rx.Observable<Void>)
-        : BaseObservable() {
-        @Bindable
-        var count: String = "0"
-            set(value) {
-                field = value
-                notifyPropertyChanged(BR.count)
-            }
+    class ViewModel(buttonTapStream: rx.Observable<Void>) {
+        val count: ReadOnlyRxProperty<String>
 
-        @Bindable
-        var fizzVisibility = View.VISIBLE
-            set(value) {
-                field = value
-                notifyPropertyChanged(BR.fizzVisibility)
-            }
-
-        @Bindable
-        var buzzVisibility = View.VISIBLE
-            set(value) {
-                field = value
-                notifyPropertyChanged(BR.buzzVisibility)
-            }
+        val fizzVisibility: ReadOnlyRxProperty<Int>
+        val buzzVisibility: ReadOnlyRxProperty<Int>
 
         init {
             val countStream = buttonTapStream
@@ -50,17 +34,16 @@ class MainActivity : AppCompatActivity() {
                     .scan({ sum, n -> sum + n })
                     .publish()
                     .refCount()
-            countStream.subscribe({ n -> count = n.toString() })
+            count = countStream.map(Int::toString)
+                    .toRxProperty("0")
 
-            val fizzStream = countStream.map({ n -> n % 3 == 0 })
-            fizzStream.subscribe({ isShown ->
-                fizzVisibility = if (isShown) View.VISIBLE else View.INVISIBLE
-            })
+            fizzVisibility = countStream
+                    .map({ n -> if (n % 3 == 0) View.VISIBLE else View.INVISIBLE })
+                    .toRxProperty(View.VISIBLE)
 
-            val buzzStream = countStream.map({ n -> n % 5 == 0 })
-            buzzStream.subscribe({ isShown ->
-                buzzVisibility = if (isShown) View.VISIBLE else View.INVISIBLE
-            })
+            buzzVisibility = countStream
+                    .map({ n -> if (n % 5 == 0) View.VISIBLE else View.INVISIBLE })
+                    .toRxProperty(View.VISIBLE)
         }
     }
 }

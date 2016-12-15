@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
-            android:text="@{viewModel.count}"
+            android:text="@{viewModel.count.value}"
             />
 
         <TextView
@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
-            android:visibility="@{viewModel.fizzVisibility}"
+            android:visibility="@{viewModel.fizzVisibility.value}"
             android:text="Fizz!"
             />
 
@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
-            android:visibility="@{viewModel.buzzVisibility}"
+            android:visibility="@{viewModel.buzzVisibility.value}"
             android:text="Buzz!"
             />
 

@@ -35,8 +35,8 @@ dependencies {
     kapt 'com.android.databinding:compiler:2.2.0'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:25.0.1'
-    compile 'com.android.support:design:25.0.1'
+    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.android.support:design:25.1.0'
 
     compile 'com.google.dagger:dagger:2.8'
     kapt 'com.google.dagger:dagger-compiler:2.8'
@@ -58,6 +58,9 @@ dependencies {
     compile 'com.trello:rxlifecycle-components:1.0'
     compile 'com.trello:rxlifecycle-kotlin:1.0'
     compile 'com.jakewharton.rxbinding:rxbinding:1.0.0'
+    compile 'com.github.k-kagurazaka.rx-property-android:rx-property:2.1.0'
+    // If you want to use Kotlin syntax
+    compile 'com.github.k-kagurazaka.rx-property-android:rx-property-kotlin:2.1.0'
 
     testCompile 'junit:junit:4.12'
 
@@ -68,4 +71,5 @@ dependencies {
 }
 repositories {
     mavenCentral()
+    maven { url "https://jitpack.io" }
 }
